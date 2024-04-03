@@ -13,12 +13,10 @@ class ExampleGraphicsContext(
 
     override fun drawSettings() {
         super.drawSettings()
-        ImGui.Begin("MyScriptSettings", 0)
+        ImGui.Begin("Emma's Shop Runner", 0)
         ImGui.SetWindowSize(250f, -1f)
-        ImGui.Text("This is my bot")
         ImGui.Text("My scripts state is: " + script.botState)
         ImGui.Text("Current Shop Index: " + script.getCurrentShop)
-        //Create a dropdown menu for selecting the shop
         val currentItem = NativeInteger(script.getCurrentShop)
         if (ImGui.Combo("Select Shop", currentItem, *shops.map { it.debug }.toTypedArray())) {
             for (i in shops.indices) {

@@ -1,7 +1,6 @@
 package net.author
 
 import net.botwithus.api.game.hud.inventories.Backpack
-import net.botwithus.api.game.hud.inventories.Bank
 import net.botwithus.internal.scripts.ScriptDefinition
 import net.botwithus.rs3.game.Area
 import net.botwithus.rs3.game.Client
@@ -13,18 +12,14 @@ import net.botwithus.rs3.game.movement.Movement
 import net.botwithus.rs3.game.movement.NavPath
 import net.botwithus.rs3.game.movement.TraverseEvent
 import net.botwithus.rs3.game.queries.builders.characters.NpcQuery
-import net.botwithus.rs3.game.queries.builders.components.ComponentQuery
 import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery
-import net.botwithus.rs3.game.queries.builders.objects.SceneObjectQuery
 import net.botwithus.rs3.game.scene.entities.characters.npc.Npc
 import net.botwithus.rs3.game.scene.entities.characters.player.Player
-import net.botwithus.rs3.game.scene.entities.`object`.SceneObject
 import net.botwithus.rs3.imgui.NativeBoolean
 import net.botwithus.rs3.imgui.NativeInteger
 import net.botwithus.rs3.script.Execution
 import net.botwithus.rs3.script.LoopingScript
 import net.botwithus.rs3.script.config.ScriptConfig
-import java.net.URI
 
 import java.util.*
 import java.util.regex.Pattern
@@ -44,11 +39,9 @@ class ExampleScript(
     enum class BotState {
         IDLE,
         SKILLING,
-        BANKING,
         TALKING,
         BUYING,
         MOVING,
-        //etc..
     }
 
     override fun initialize(): Boolean {
@@ -69,11 +62,6 @@ class ExampleScript(
         when (botState) {
             BotState.SKILLING -> {
                 Execution.delay(handleSkilling(player))
-                return
-            }
-
-            BotState.BANKING -> {
-                Execution.delay(handleBanking(player))
                 return
             }
 
@@ -156,7 +144,6 @@ class ExampleScript(
             return random.nextLong(1000, 2000)
         }
         val shop = shops[getCurrentShop]
-        // Iterate through items to buy
         shop.thingsToBuy.forEach { itemName ->
             val pattern = Pattern.compile(itemName)
             val predicate = Shop.nameMatcher(pattern)
@@ -175,27 +162,11 @@ class ExampleScript(
 
         return random.nextLong(1000, 3000)
     }
-
     private fun moveToNextShop() {
         getCurrentShop++
         val nextShop = shops[getCurrentShop]
         println("Moving to next shop ${nextShop.debug}")
         botState = BotState.MOVING
-    }
-
-    private fun handleBanking(player: Player): Long {
-        if (player.isMoving || player.animationId != -1)
-            return random.nextLong(1000, 2000)
-
-        if (Bank.isOpen()) {
-            //do bank logic
-        } else {
-            val sceneObject: SceneObject? =
-                SceneObjectQuery.newQuery().name("Bank chest").option("Use").results().nearest()
-            sceneObject?.interact("Use")
-            botState = BotState.SKILLING;
-        }
-        return random.nextLong(1000, 3000)
     }
 
     private fun handleSkilling(player: Player): Long {
