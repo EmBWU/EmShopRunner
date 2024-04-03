@@ -22,7 +22,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. Clone the repository
 ```bash
-git clone https://github.com/JustRebeccabla/EmmaShopRun.git
+git clone https://github.com/EmBWU/EmmaShopRun.git
 ```
 
 ## Built With
@@ -44,3 +44,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 - The Bwu Community
+- Ceru for his Shop Class
