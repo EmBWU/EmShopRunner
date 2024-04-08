@@ -43,17 +43,18 @@ jobs:
       id: find_jar
       run: |
         jar_path=$(ls ./build/libs/*.jar | head -n 1)
-        echo "::set-output name=jar_path::$jar_path"
-        jar_name=$(basename $jar_path)
-        echo "::set-output name=jar_name::$jar_name"
+        echo "jar_path=$jar_path" >> $GITHUB_ENV
+        jar_name=$(basename "$jar_path")
+        echo "jar_name=${jar_name}" >> $GITHUB_ENV
       shell: bash
 
+    # Adjustments in later steps to use environment variables instead of outputs
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.find_jar.outputs.jar_path }}
-        asset_name: ${{ steps.find_jar.outputs.jar_name }}
+        asset_path: ${{ env.jar_path }}
+        asset_name: ${{ env.jar_name }}
         asset_content_type: application/java-archive
