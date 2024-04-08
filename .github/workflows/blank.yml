@@ -34,6 +34,7 @@ jobs:
       run: ./gradlew build
 
     - name: Create Release
+      id: create_release # Ensure this ID is unique and correctly referenced later
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +43,7 @@ jobs:
         release_name: Release ${{ env.UNIQUE_TAG }}
         draft: false
         prerelease: false
-
+        
     - name: Find JAR
       id: find_jar
       run: |
@@ -57,7 +58,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This must match the ID of the 'Create Release' step
         asset_path: ${{ env.jar_path }}
         asset_name: ${{ env.jar_name }}
         asset_content_type: application/java-archive
